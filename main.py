@@ -1,11 +1,28 @@
 # ABC-15 — Bài giữa kì, số thứ tự 15.
-# Chạy tại thư mục bài: python main.py
-# Chỉ dùng ba thư viện NumPy, pandas và Matplotlib.
+# Tạo lại kết quả/video: python main.py
+# Chạy web: uvicorn main:app --host 0.0.0.0 --port 8000
+# Phân tích và vẽ dùng NumPy, pandas, Matplotlib; FastAPI phục vụ web.
+from pathlib import Path
+
+from fastapi import FastAPI
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.animation import FFMpegWriter
 from matplotlib.collections import LineCollection
+
+
+# Web Service: trả trang HTML và các tệp CSS, ảnh, video có sẵn.
+THU_MUC = Path(__file__).resolve().parent
+app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+app.mount('/static', StaticFiles(directory=THU_MUC / 'static'), name='static')
+
+
+@app.get('/')
+def trang_chu():
+    return FileResponse(THU_MUC / 'templates' / 'index.html')
 
 
 # 1. Phân tích dữ liệu và trả lời 6 câu hỏi.

@@ -1,8 +1,9 @@
-# Cấu hình web tĩnh nếu sau này muốn đưa bài lên Render.
+# Cấu hình FastAPI Web Service trên Render.
 services:
   - type: web
-    name: abc-15-video
-    runtime: static
-    buildCommand: mkdir -p public && cp templates/index.html public/index.html && cp -r static public/static
-    staticPublishPath: ./public
+    name: web-giuaki-kiet
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     autoDeployTrigger: "off"
