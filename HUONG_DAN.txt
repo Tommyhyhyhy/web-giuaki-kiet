@@ -1,0 +1,26 @@
+ABC-15 — BÀI GIỮA KÌ, SỐ THỨ TỰ 15
+
+1. Xem bài: nhấp đúp mo_web.bat, sau đó bấm Play trên video.
+   Trang chỉ có tiêu đề, video và chú thích màu. Không cần Internet.
+   Nếu mở thủ công: kéo templates/index.html vào Chrome hoặc Edge.
+
+2. Kết quả 6 câu hỏi nằm trong ket_qua/nhan_xet.txt.
+   Cùng thư mục có 3 bảng CSV và 4 hình phân tích.
+
+3. main.py dùng pandas đọc dữ liệu, NumPy tính toán, Matplotlib vẽ.
+   Hàm phan_tich: tạo các bảng và hình cho 6 câu hỏi.
+   Hàm mau_gia: so giá với sàn, trần, tham chiếu để chọn màu.
+   Hàm tao_video: thêm mỗi ngày vào hai biểu đồ rồi ghi khung hình.
+   Video có đủ 365 ngày × 7 giá; 6 ngày/giây, dài khoảng 61 giây.
+   Nến trên: mở–đóng, râu thấp–cao; màu đóng cửa so với tham chiếu.
+
+4. Tạo lại kết quả: mở Terminal tại thư mục bài và chạy:
+   python -m pip install -r requirements.txt
+   python main.py
+   Cần chương trình FFmpeg tại tools/ffmpeg.exe để xuất MP4.
+   FFmpeg mã hóa các khung hình Matplotlib thành video, không phải thư viện phân tích.
+   Máy hiện tại đã có sẵn môi trường: .venv\Scripts\python.exe main.py
+
+5. Dữ liệu gốc: data/abc-15.csv. Lịch 2025 chỉ để chia tháng/quý.
+   Ngày đầu giả định tham chiếu 10000; từ ngày 2 dùng đóng cửa hôm trước.
+   render.yaml là cấu hình web tĩnh để dùng khi tự triển khai lên Render.

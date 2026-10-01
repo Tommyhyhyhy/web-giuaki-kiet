@@ -1,0 +1,8 @@
+# Cấu hình web tĩnh nếu sau này muốn đưa bài lên Render.
+services:
+  - type: web
+    name: abc-15-video
+    runtime: static
+    buildCommand: mkdir -p public && cp templates/index.html public/index.html && cp -r static public/static
+    staticPublishPath: ./public
+    autoDeployTrigger: "off"

@@ -1,0 +1,40 @@
+ABC-15 — NHẬN XÉT NGẮN CHO 6 CÂU HỎI
+Quy ước: dùng 7 giá/ngày; lịch không nhuận 2025 chỉ để gán tháng/quý, không phải năm được cung cấp.
+Ngày 1 giả định tham chiếu 10000 (phù hợp sàn 9000, trần 11000). Đơn vị giữ nguyên theo dữ liệu.
+Độ lệch chuẩn dùng ddof=0. So sánh giá dùng sai số tuyệt đối 0.00001, rtol=0.
+
+1. THÁNG — xem thang.csv và hai hình đầu.
+Giá trung bình cao nhất ở tháng 7, thấp nhất ở tháng 3.
+Tháng 9 có biên độ (max−min) lớn nhất: 17,960.48.
+Tháng 9 có độ lệch chuẩn lớn nhất: 4,656.07.
+Boxplot: hộp từ phân vị 25% đến 75%; đường trong hộp là trung vị. Hộp cao thể hiện 50% giá giữa phân tán hơn.
+Râu đến điểm xa nhất còn nằm trong [Q1−1.5×IQR, Q3+1.5×IQR]; các chấm ngoài râu là ngoại lệ theo quy tắc này.
+Tháng 9 có hộp cao nhất (IQR = 7,889.04), tức 50% giá giữa phân tán mạnh nhất.
+Mức giá giữa các tháng khác nhau; dùng thêm CV = độ lệch chuẩn / trung bình × 100% để so sánh tương đối.
+
+2. QUÝ — xem quy.csv.
+Quý 1: trung bình 6,536.27; độ lệch chuẩn 1,684.76; biên độ 7,866.25; CV 25.78%; đầu→cuối quý -47.79%.
+Quý 2: trung bình 7,273.77; độ lệch chuẩn 2,828.64; biên độ 15,910.20; CV 38.89%; đầu→cuối quý +262.15%.
+Quý 3: trung bình 16,915.71; độ lệch chuẩn 4,636.77; biên độ 19,947.10; CV 27.41%; đầu→cuối quý +14.97%.
+Quý 4: trung bình 7,553.57; độ lệch chuẩn 2,751.09; biên độ 16,025.95; CV 36.42%; đầu→cuối quý -69.87%.
+Quý 3 phân tán mạnh nhất theo độ lệch chuẩn tuyệt đối; quý 2 mạnh nhất theo CV.
+
+3. NGÀY CÓ YẾU TỐ BẤT THƯỜNG — xem ngay_bat_thuong.csv (một dòng/ngày).
+Có 364 ngày được liệt kê: 330 ngày chạm sàn, 332 ngày chạm trần, 0 ngày bằng tham chiếu; các nhóm có thể trùng nhau.
+Có 0 giá vượt biên. Chạm sàn/trần/tham chiếu là sự kiện cần quan sát, không tự động là lỗi.
+
+4. HISTOGRAM — xem hình 3. Hai nửa năm dùng cùng 25 khoảng giá và mật độ, diện tích mỗi histogram bằng 1.
+Hai quý đầu: 1267 giá, TB 6,907.06, std 2,360.09. Hai quý cuối: 1288 giá, TB 12,234.64, std 6,037.09.
+Hai quý cuối có mức giá trung bình cao hơn và phân bố rộng hơn hai quý đầu (độ lệch chuẩn lớn hơn).
+So sánh mật độ giúp tránh chênh lệch số quan sát do hai nửa năm có số ngày khác nhau.
+
+5. CẢ NĂM — xem hình 4.
+Từ mở cửa đầu năm 10,322.49 đến đóng cửa cuối năm 6,024.86: giảm 41.63%.
+Giá giảm trong quý 1, phục hồi mạnh quý 2, đạt đỉnh trong quý 3 rồi giảm trong quý 4; không giảm đều cả năm.
+Giá thấp nhất 3,269.64: ngày 62 (03/03), phiên 1. Giá cao nhất 28,554.53: ngày 263 (20/09), phiên 6.
+Biên độ toàn năm (max−min) là 25,284.89; đây là khoảng giữa hai cực trị, không phải mức thay đổi một ngày.
+Biên độ trong ngày lớn nhất 5,191.73, ngày 263 (20/09).
+
+6. VÌ SAO ĐƯỜNG ĐI XUỐNG VẪN XANH?
+Độ dốc so với phiên ngay trước, còn màu so với giá tham chiếu (đóng cửa ngày trước). Giá giảm nhưng vẫn trên tham chiếu thì vẫn xanh lá.
+Ví dụ ngày 1 (01/01), phiên 1→2: 10,322.49→10,290.87; tham chiếu 10,000.00.
