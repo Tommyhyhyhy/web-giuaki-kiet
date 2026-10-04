@@ -1,0 +1,1 @@
+DỰ ÁN CHO BIẾT ĐƯỢC TỈ GIÁ CỔ PHIẾU CỦA 1 CÔNG TY TRONG 1 NĂM THÔNG QUA DỮ LIỆU
