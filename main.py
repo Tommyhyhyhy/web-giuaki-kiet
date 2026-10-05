@@ -119,7 +119,6 @@ def tao_video(gia, thu_muc='static'):
                     print(f'Đã xuất {i + 1}/365 ngày', flush=True)
         fig.savefig(thu_muc + '/img/xem_truoc.png', dpi=100)
         plt.close(fig)
-    print('Đã xuất video abc15.mp4 (365 ngày, khoảng 61 giây).')
 
 # 3. Đọc dữ liệu, tạo kết quả và xuất video.
 if __name__ == '__main__':
@@ -128,4 +127,3 @@ if __name__ == '__main__':
         raise ValueError('Dữ liệu phải gồm 365 ngày × 7 giá hợp lệ, đều lớn hơn 0.')
     phan_tich(gia)
     tao_video(gia)
-    print('Hoàn thành! Mở mo_web.bat để xem bài.')
