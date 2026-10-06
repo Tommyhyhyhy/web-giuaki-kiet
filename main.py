@@ -33,8 +33,18 @@ def mau_gia(gia, tham_chieu):
     return '#35d273' if gia > tham_chieu else '#ff515b'
 
 
+def chia_nhom_nen(so_ngay):
+    """Mỗi đoạn 30 ngày chia thành 8 nến; đoạn cuối chia theo cùng tỉ lệ."""
+    nhom_nen = []
+    for dau in range(0, so_ngay, 30):
+        doan_ngay = np.arange(dau, min(dau + 30, so_ngay))
+        so_nen = int(np.ceil(len(doan_ngay) * 8 / 30))
+        nhom_nen.extend(np.array_split(doan_ngay, so_nen))
+    return nhom_nen
+
+
 def tao_video(gia, thu_muc='static'):
-    """Một khung hình ứng với một ngày, có đủ 7 mức giá của ngày đó."""
+    """Nến gộp 8 cây/30 ngày; đường giá vẫn có đủ 7 mức giá mỗi ngày."""
     plt.switch_backend('Agg')
     plt.rcParams['animation.ffmpeg_path'] = 'tools/ffmpeg.exe'
     if not FFMpegWriter.isAvailable():
@@ -45,6 +55,7 @@ def tao_video(gia, thu_muc='static'):
     tham_chieu = np.r_[10000, gia[:-1, -1]]  # Ngày đầu giả định tham chiếu 10.000.
     mo, dong = gia[:, 0], gia[:, -1]
     thap, cao = gia.min(axis=1), gia.max(axis=1)
+    nhom_nen = chia_nhom_nen(len(gia))
     gia_phang = gia.ravel()
     x = np.repeat(ngay, 7) + np.tile(np.linspace(-0.35, 0.35, 7), 365)
     mau_diem = [mau_gia(p, tham_chieu[i // 7]) for i, p in enumerate(gia_phang)]
@@ -72,17 +83,19 @@ def tao_video(gia, thu_muc='static'):
             ax.set_ylabel('Giá')
             ax.grid(alpha=.15)
             ax.tick_params(labelsize=10)
-        tren.set_title('Biểu đồ nến', loc='left', fontsize=12)
+        tren.set_title('Nến gộp · 8 nến / 30 ngày', loc='left', fontsize=12)
         duoi.set_title('Đường giá', loc='left', fontsize=12)
         duoi.set_xlabel('Ngày')
         duoi.set_xticks(np.arange(0, 361, 30))
         tieu_de = fig.suptitle('ABC-15', fontsize=16)
 
-        # Thân nến: khoảng mở–đóng. Râu nến: khoảng thấp nhất–cao nhất.
-        mau_nen = [mau_gia(dong[i], tham_chieu[i]) for i in range(365)]
-        nen = tren.bar(ngay, abs(dong - mo), bottom=np.minimum(mo, dong),
-                       width=.65, color=mau_nen, linewidth=0)
-        rau = LineCollection([], linewidths=.8)
+        # Một nhóm chứa 3–4 ngày; 5 ngày dư cuối năm tạo 2 nến.
+        vi_tri = [(nhom[0] + nhom[-1]) / 2 + 1 for nhom in nhom_nen]
+        do_rong = [.72 * len(nhom) for nhom in nhom_nen]
+        nen = tren.bar(vi_tri, np.zeros(len(nhom_nen)), width=do_rong,
+                       linewidth=0, visible=False)
+        mau_dong_cua = [mau_gia(dong[i], tham_chieu[i]) for i in range(365)]
+        rau = LineCollection([], linewidths=1.2)
         than_ngang = LineCollection([], linewidths=2)
         tren.add_collection(rau)
         tren.add_collection(than_ngang)
@@ -93,20 +106,41 @@ def tao_video(gia, thu_muc='static'):
 
         def cap_nhat(i):
             n = (i + 1) * 7
-            for j, cot in enumerate(nen):
-                cot.set_visible(j <= i)
-            rau.set_segments([[(j + 1, thap[j]), (j + 1, cao[j])] for j in range(i + 1)])
-            rau.set_color(mau_nen[:i + 1])
-            # Khi mở cửa bằng đóng cửa, thân nến là một gạch ngang.
-            bang_nhau = [j for j in range(i + 1) if np.isclose(mo[j], dong[j], atol=1e-5, rtol=0)]
-            than_ngang.set_segments([[(j + .7, mo[j]), (j + 1.3, mo[j])] for j in bang_nhau])
-            than_ngang.set_color([mau_nen[j] for j in bang_nhau])
+            cac_rau, mau_rau, cac_ngang, mau_ngang = [], [], [], []
+            for cot, nhom in zip(nen, nhom_nen):
+                dau = int(nhom[0])
+                cot.set_visible(dau <= i)
+                if dau > i:
+                    continue
+
+                # Nến đang hình thành chỉ dùng dữ liệu đã xuất hiện đến ngày i.
+                cuoi = min(int(nhom[-1]), i)
+                tam = (dau + cuoi) / 2 + 1
+                rong = .72 * (cuoi - dau + 1)
+                mo_nhom, dong_nhom = mo[dau], dong[cuoi]
+                # Màu vẫn so đóng cửa ngày cuối đang có với tham chiếu của ngày đó.
+                mau = mau_dong_cua[cuoi]
+                cot.set_x(tam - rong / 2)
+                cot.set_width(rong)
+                cot.set_y(min(mo_nhom, dong_nhom))
+                cot.set_height(abs(dong_nhom - mo_nhom))
+                cot.set_facecolor(mau)
+                cac_rau.append([(tam, thap[dau:cuoi + 1].min()),
+                                (tam, cao[dau:cuoi + 1].max())])
+                mau_rau.append(mau)
+                if np.isclose(mo_nhom, dong_nhom, atol=1e-5, rtol=0):
+                    cac_ngang.append([(tam - rong / 2, mo_nhom), (tam + rong / 2, mo_nhom)])
+                    mau_ngang.append(mau)
+            rau.set_segments(cac_rau)
+            rau.set_color(mau_rau)
+            than_ngang.set_segments(cac_ngang)
+            than_ngang.set_color(mau_ngang)
             duong.set_segments(doan[:so_doan[n - 1]])
             duong.set_color(mau_doan[:so_doan[n - 1]])
             diem.set_offsets(np.column_stack((x[:n], gia_phang[:n])))
             diem.set_facecolor(mau_diem[:n])
             hien_tai.set_data([x[n - 1]], [dong[i]])
-            hien_tai.set_color(mau_nen[i])
+            hien_tai.set_color(mau_dong_cua[i])
             tieu_de.set_text(f'ABC-15  |  Ngày {i + 1} ({lich[i]:%d/%m})  |  Giá: {dong[i]:,.2f}')
 
         writer = FFMpegWriter(fps=6, codec='libx264',
@@ -125,5 +159,4 @@ if __name__ == '__main__':
     gia = pd.read_csv('data/abc-15.csv', header=None).to_numpy(dtype=float)
     if gia.shape != (365, 7) or not np.isfinite(gia).all() or (gia <= 0).any():
         raise ValueError('Dữ liệu phải gồm 365 ngày × 7 giá hợp lệ, đều lớn hơn 0.')
-    phan_tich(gia)
     tao_video(gia)
