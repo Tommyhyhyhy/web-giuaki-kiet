@@ -1,0 +1,11 @@
+﻿Nguồn: data/abc-15.csv, dùng đủ 7 giá mỗi ngày.
+Đề không ghi năm: dùng lịch 2025 (không nhuận) để chia tháng/quý.
+Độ lệch chuẩn quần thể: ddof=0. Đơn vị giá theo dữ liệu gốc.
+Tham chiếu ngày đầu giả định 10.000; các ngày sau là đóng cửa hôm trước.
+
+
+CÂU 6 — ĐƯỜNG ĐI XUỐNG NHƯNG VẪN XANH
+Ngày 1 (01/01), phiên 1→2:
+Giá: 10,322.49→10,290.87; tham chiếu: 10,000.00.
+Độ dốc so với phiên liền trước; màu so với đóng cửa ngày trước.
+Giá giảm nhưng vẫn trên tham chiếu và khác trần thì vẫn xanh lá.
